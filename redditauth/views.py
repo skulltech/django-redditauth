@@ -3,6 +3,8 @@ import json
 from uuid import uuid4
 import hashlib
 from django.shortcuts import redirect
+from django.http import HttpResponse
+
 
 STATE = ''
 
@@ -19,30 +21,41 @@ def Reddit():
 def authorize(request):
     reddit = Reddit()
 
-    state = uuid4()
+    state = str(uuid4()).encode('UTF-8')
     request.session['state'] = hashlib.md5(state).hexdigest()
-    return redirect(reddit.auth.url(['submit'], state, 'permanent'))
+    request.session.modified = True
+
+    print('printing')
+    for key, value in request.session.items():
+        print(key, ': ', value)
+    return redirect(reddit.auth.url(['submit', 'identity'], state, 'permanent'))
 
 
 def callback(request):
+    print('printing')
+    for key, value in request.session.items():
+        print(key, ': ', value)
+
     error = request.GET.get('error', '')
     if error:
         return
 
     state = request.GET.get('state', '')
-    if request.session['state'] != hashlib.md5(state).hexdigest():
+    if request.session['state'] != hashlib.md5(state.encode('UTF-8')).hexdigest():
         return
 
     code = request.GET.get('code', '')
-    tokenize(code)
+    me = tokenize(code)
+    return HttpResponse("Signed in as {}".format(me))
 
 
 def tokenize(code):
     reddit = Reddit()
     dump = {
         'token': reddit.auth.authorize(code),
-        'user': reddit.user.me()
+        'user': str(reddit.user.me())
     }
 
     with open('auth.json', 'w') as f:
         json.dump(dump, f)
+    return reddit.user.me()

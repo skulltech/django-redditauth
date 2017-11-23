@@ -16,10 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from .views import authorize
+from .views import authorize, callback
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^authorize/', authorize)
+    url(r'^authorize/', authorize),
+    url(r'^callback/', callback)
 ]
