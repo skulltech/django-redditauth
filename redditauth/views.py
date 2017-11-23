@@ -41,7 +41,7 @@ def tokenize(code):
     reddit = Reddit()
     dump = {
         'token': reddit.auth.authorize(code),
-        'user' : reddit.user.me()
+        'user': reddit.user.me()
     }
 
     with open('auth.json', 'w') as f:
