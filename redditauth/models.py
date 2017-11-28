@@ -19,36 +19,39 @@ def validate_reddit_username(value):
 
 class RedditUser(AbstractUser):
     username = models.CharField(unique=True, primary_key=True, validators=[validate_reddit_username], max_length=20)
-    token = models.CharField(blank=True)
-    password = models.CharField(blank=True)
+    token = models.CharField()
 
     USERNAME_FIELD = username
-    REQUIRED_FIELDS = ['username', 'password']
+    REQUIRED_FIELDS = ['username', 'token']
+
+    def reddit(self):
+        with open('secret.json', 'r') as f:
+            secret = json.load(f)
+
+        return praw.Reddit(client_id=secret['client_id'], client_secret=secret['client_secret'],
+                             refresh_token=self.token, user_agent='Plan-Reddit by /u/SkullTech101')
 
 
 class RedditBackend:
     @staticmethod
-    def authenticate(request, username=None, password=None, code=None):
+    def authenticate(request, username=None, code=None):
         try:
-            user = RedditUser.objects.get(username=username)
+            return RedditUser.objects.get(username=username)
         except RedditUser.DoesNotExist:
             if code:
                 with open('secret.json', 'r') as f:
                     secret = json.load(f)
-
                 reddit = praw.Reddit(client_id=secret['client_id'], client_secret=secret['client_secret'],
                                      redirect_uri='http://localhost:8000/callback',
                                      user_agent='Plan-Reddit by /u/SkullTech101')
                 token = reddit.auth.authorize(code)
-                user = RedditUser(username=reddit.user.me(), token=token)
-                return user
-            else:
-                user = RedditUser(username=username, password=password)
-                return user
+                return RedditUser(username=reddit.user.me(), token=token)
+
+        return None
 
     @staticmethod
     def get_user(username):
         try:
-            RedditUser.objects.get(username=username)
+            return RedditUser.objects.get(username=username)
         except RedditUser.DoesNotExist:
             return None
