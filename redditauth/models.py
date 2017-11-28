@@ -16,9 +16,17 @@ def validate_reddit_username(value):
 
 
 class RedditUser(AbstractUser):
-    username = models.CharField(unique=True, validators=[validate_reddit_username], max_length=20)
+    username = models.CharField(unique=True, primary_key=True, validators=[validate_reddit_username], max_length=20)
     token = models.CharField(blank=True)
     password = models.CharField(blank=True)
 
     USERNAME_FIELD = username
     REQUIRED_FIELDS = ['username', 'password']
+
+
+class RedditBackend:
+    def get_user(self, username):
+        try:
+            RedditUser.objects.get(username=username)
+        except RedditUser.DoesNotExist:
+            return None
