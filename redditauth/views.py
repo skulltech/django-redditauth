@@ -25,17 +25,10 @@ def authorize(request):
     request.session['state'] = hashlib.md5(state).hexdigest()
     request.session.modified = True
 
-    print('printing')
-    for key, value in request.session.items():
-        print(key, ': ', value)
     return redirect(reddit.auth.url(['submit', 'identity'], state, 'permanent'))
 
 
 def callback(request):
-    print('printing')
-    for key, value in request.session.items():
-        print(key, ': ', value)
-
     error = request.GET.get('error', '')
     if error:
         return
