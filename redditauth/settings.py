@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'redditauth'
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'redditauth.wsgi.application'
 
+AUTHENTICATION_BACKENDS = ['redditauth.models.RedditBackend']
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
