@@ -20,7 +20,7 @@ def authorize(request):
     request.session['state'] = hashlib.md5(state).hexdigest()
     request.session.modified = True
 
-    return redirect(reddit.auth.url(['identity'], state, 'permanent'))
+    return redirect(reddit.auth.url(['submit', 'identity'], state, 'permanent'))
 
 
 def callback(request):
@@ -29,8 +29,8 @@ def callback(request):
         return
 
     state = request.GET.get('state', '')
-    # if request.session['state'] != hashlib.md5(state.encode('UTF-8')).hexdigest():
-    #     return
+    if request.session['state'] != hashlib.md5(state.encode('UTF-8')).hexdigest():
+        return
 
     code = request.GET.get('code', '')
     user = authenticate(request=request, code=code)

@@ -74,7 +74,6 @@ WSGI_APPLICATION = 'redditauth.wsgi.application'
 AUTHENTICATION_BACKENDS = ['redditauth.backends.RedditBackend']
 AUTH_USER_MODEL = 'redditauth.RedditUser'
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_ENGINE =  "django.contrib.sessions.backends.signed_cookies"
 
 
 # Database
