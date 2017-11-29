@@ -5,6 +5,8 @@ import hashlib
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
 
 
 def authorize(request):
@@ -34,3 +36,8 @@ def callback(request):
     user = authenticate(request=request, code=code)
     login(request, user)
     return HttpResponse("Signed in as {}".format(user.username))
+
+
+@login_required(login_url='/authorize')
+def home(request):
+    return HttpResponse("Signed in as {}".format(request.user.username))
