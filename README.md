@@ -10,15 +10,17 @@ Detailed documentation is in the "docs" directory.
 
 1. Add "redditauth" to your INSTALLED_APPS setting like this::
 
+    ```python
     INSTALLED_APPS = [
         ...
         'redditauth',
     ]
+    ```
 
 2. Include the polls URLconf in your project urls.py like this::
-```python
-url(r'^redditauth/', include('redditauth.urls')),
-```
+    ```python
+    url(r'^redditauth/', include('redditauth.urls')),
+    ```
 
 3. Run `python manage.py migrate` to create the polls models.
 
