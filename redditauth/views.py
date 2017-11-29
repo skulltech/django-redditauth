@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
 
-
 def authorize(request):
     with open('secret.json', 'r') as f:
         secret = json.load(f)
@@ -17,10 +16,11 @@ def authorize(request):
                          redirect_uri='http://localhost:8000/callback', user_agent='Plan-Reddit by /u/SkullTech101')
 
     state = str(uuid4()).encode('UTF-8')
+
     request.session['state'] = hashlib.md5(state).hexdigest()
     request.session.modified = True
 
-    return redirect(reddit.auth.url(['submit', 'identity'], state, 'permanent'))
+    return redirect(reddit.auth.url(['identity'], state, 'permanent'))
 
 
 def callback(request):
@@ -29,8 +29,8 @@ def callback(request):
         return
 
     state = request.GET.get('state', '')
-    if request.session['state'] != hashlib.md5(state.encode('UTF-8')).hexdigest():
-        return
+    # if request.session['state'] != hashlib.md5(state.encode('UTF-8')).hexdigest():
+    #     return
 
     code = request.GET.get('code', '')
     user = authenticate(request=request, code=code)

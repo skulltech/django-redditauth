@@ -71,7 +71,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'redditauth.wsgi.application'
 
-AUTHENTICATION_BACKENDS = ['redditauth.models.RedditBackend']
+AUTHENTICATION_BACKENDS = ['redditauth.backends.RedditBackend']
+AUTH_USER_MODEL = 'redditauth.RedditUser'
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_ENGINE =  "django.contrib.sessions.backends.signed_cookies"
+
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -108,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
