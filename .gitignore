@@ -99,3 +99,12 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# PyCharm folder
+.idea/
+
+# Database
+db.sqlite3*
+
+# Secret file containing nuclear missile launch codes
+secret.json
